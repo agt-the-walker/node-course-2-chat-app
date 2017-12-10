@@ -1,11 +1,16 @@
 const socket = io()
 
+function formattedTime(message) {
+  return moment(message.createdAt).format('h:mm a')
+}
+
 socket.on('connect', () => console.log('Connected to server'))
 socket.on('disconnect', () => console.log('Disconnected from server'))
 
 socket.on('newMessage', message => {
+
   const li = jQuery('<li></li>')
-  li.text(`${message.from}: ${message.text}`)
+  li.text(`${message.from} ${formattedTime(message)}: ${message.text}`)
 
   jQuery('#messages').append(li)
 })
@@ -14,7 +19,7 @@ socket.on('newLocationMessage', message => {
   const li = jQuery('<li></li>')
   const a = jQuery('<a target="_blank">My current location</a>')
 
-  li.text(`${message.from}: `)
+  li.text(`${message.from} ${formattedTime(message)}: `)
   a.attr('href', message.url)
   li.append(a)
 
