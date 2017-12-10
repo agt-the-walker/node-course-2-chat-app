@@ -4,6 +4,23 @@ function formattedTime(message) {
   return moment(message.createdAt).format('h:mm a')
 }
 
+function scrollToBottom() {
+  // Selectors
+  const messages = jQuery('#messages')
+  const newMessage = messages.children('li:last-child')
+
+  // Heights
+  const clientHeight = messages.prop('clientHeight')
+  const scrollTop = messages.prop('scrollTop')
+  const scrollHeight = messages.prop('scrollHeight')
+  const newMessageHeight = newMessage.innerHeight()
+  const lastMessageHeight = newMessage.prev().innerHeight()
+
+  if (clientHeight + scrollTop + newMessageHeight + lastMessageHeight >=
+      scrollHeight)
+    messages.scrollTop(scrollHeight)
+}
+
 socket.on('connect', () => console.log('Connected to server'))
 socket.on('disconnect', () => console.log('Disconnected from server'))
 
@@ -16,6 +33,7 @@ socket.on('newMessage', message => {
   })
 
   jQuery('#messages').append(html)
+  scrollToBottom()
 })
 
 socket.on('newLocationMessage', message => {
@@ -27,6 +45,7 @@ socket.on('newLocationMessage', message => {
   })
 
   jQuery('#messages').append(html)
+  scrollToBottom()
 })
 
 jQuery('#message-form').on('submit', (e) => {
