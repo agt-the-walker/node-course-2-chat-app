@@ -8,22 +8,25 @@ socket.on('connect', () => console.log('Connected to server'))
 socket.on('disconnect', () => console.log('Disconnected from server'))
 
 socket.on('newMessage', message => {
+  const template = jQuery('#message-template').html()
+  const html = Mustache.render(template, {
+    text: message.text,
+    from: message.from,
+    createdAt: formattedTime(message)
+  })
 
-  const li = jQuery('<li></li>')
-  li.text(`${message.from} ${formattedTime(message)}: ${message.text}`)
-
-  jQuery('#messages').append(li)
+  jQuery('#messages').append(html)
 })
 
 socket.on('newLocationMessage', message => {
-  const li = jQuery('<li></li>')
-  const a = jQuery('<a target="_blank">My current location</a>')
+  const template = jQuery('#location-message-template').html()
+  const html = Mustache.render(template, {
+    url: message.url,
+    from: message.from,
+    createdAt: formattedTime(message)
+  })
 
-  li.text(`${message.from} ${formattedTime(message)}: `)
-  a.attr('href', message.url)
-  li.append(a)
-
-  jQuery('#messages').append(li)
+  jQuery('#messages').append(html)
 })
 
 jQuery('#message-form').on('submit', (e) => {
